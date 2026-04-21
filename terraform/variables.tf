@@ -5,7 +5,7 @@ variable "aws_region" {
 
 variable "project_name" {
   type    = string
-  default = "antigravity"
+  default = "tksde"
 }
 
 variable "environment" {
@@ -35,12 +35,12 @@ variable "availability_zones" {
 
 variable "db_name" {
   type    = string
-  default = "antigravity"
+  default = "tksde"
 }
 
 variable "db_username" {
   type    = string
-  default = "antigravity_user"
+  default = "tksde_user"
 }
 
 variable "db_instance_class" {

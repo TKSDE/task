@@ -13,10 +13,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "antigravity-tf-state"
+    bucket         = "tksde-tf-state"
     key            = "prod/terraform.tfstate"
     region         = "us-east-1"
     encrypt        = true
-    dynamodb_table = "antigravity-tf-lock"
+    dynamodb_table = "tksde-tf-lock"
   }
 }

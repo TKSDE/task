@@ -15,11 +15,11 @@ def get_db_connection():
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok", "service": "antigravity"}), 200
+    return jsonify({"status": "ok", "service": "tksde"}), 200
 
 @app.route("/", methods=["GET"])
 def index():
-    return jsonify({"message": "Antigravity is live"}), 200
+    return jsonify({"message": "tksde is live"}), 200
 
 @app.route("/db-check", methods=["GET"])
 def db_check():

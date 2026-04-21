@@ -1,4 +1,4 @@
-# Antigravity
+# Best Explanation of the project 
 
 A production-grade, cloud-native Python Flask application deployed on AWS using ECS Fargate, with infrastructure managed entirely by Terraform and a fully automated CI/CD pipeline via GitHub Actions.
 
@@ -31,7 +31,7 @@ Internet
          ┌───────────▼───────────┐
          │     ECS Fargate       │
          │  (Private Subnets)    │
-         │  Task: antigravity    │ ◄── Secrets Manager
+         │  Task: tksde    │ ◄── Secrets Manager
          └───────────┬───────────┘
                      │
          ┌───────────▼───────────┐
@@ -67,7 +67,7 @@ PostgreSQL 16 is deployed in a Multi-AZ configuration in private subnets. Storag
 ## Project Structure
 
 ```
-antigravity/
+tksde/
 ├── app.py                          # Flask application
 ├── requirements.txt                # Python dependencies
 ├── Dockerfile                      # Multi-stage container build
@@ -114,9 +114,9 @@ This project uses a three-phase secret management strategy that ensures no plain
 
 ```json
 {
-  "username": "antigravity_user",
+  "username": "tksde_user",
   "password": "<generated>",
-  "dbname":   "antigravity",
+  "dbname":   "tksde",
   "host":     "<rds-endpoint>",
   "port":     5432
 }
@@ -138,19 +138,19 @@ Before the first `terraform init`, create the S3 bucket and DynamoDB table for s
 
 ```bash
 aws s3api create-bucket \
-  --bucket antigravity-tf-state \
+  --bucket tksde-tf-state \
   --region us-east-1
 
 aws s3api put-bucket-versioning \
-  --bucket antigravity-tf-state \
+  --bucket tksde-tf-state \
   --versioning-configuration Status=Enabled
 
 aws s3api put-bucket-encryption \
-  --bucket antigravity-tf-state \
+  --bucket tksde-tf-state \
   --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
 
 aws dynamodb create-table \
-  --table-name antigravity-tf-lock \
+  --table-name tksde-tf-lock \
   --attribute-definitions AttributeName=LockID,AttributeType=S \
   --key-schema AttributeName=LockID,KeyType=HASH \
   --billing-mode PAY_PER_REQUEST \
@@ -161,12 +161,12 @@ aws dynamodb create-table \
 
 ```bash
 aws ecr create-repository \
-  --repository-name antigravity \
+  --repository-name tksde \
   --image-scanning-configuration scanOnPush=true \
   --region us-east-1
 ```
 
-Note the ECR URI (format: `<account_id>.dkr.ecr.us-east-1.amazonaws.com/antigravity`). You will need it in Step 4.
+Note the ECR URI (format: `<account_id>.dkr.ecr.us-east-1.amazonaws.com/tksde`). You will need it in Step 4.
 
 ### Step 3 — Initialize and Apply Terraform
 
@@ -185,8 +185,8 @@ Terraform will provision all resources in the correct dependency order. The init
 aws ecr get-login-password --region us-east-1 | \
   docker login --username AWS --password-stdin <ECR_URI>
 
-docker build -t antigravity:latest .
-docker tag antigravity:latest <ECR_URI>:latest
+docker build -t tksde:latest .
+docker tag tksde:latest <ECR_URI>:latest
 docker push <ECR_URI>:latest
 ```
 
@@ -271,7 +271,7 @@ pip install -r requirements.txt
 export DB_HOST=localhost
 export DB_USER=postgres
 export DB_PASS=postgres
-export DB_NAME=antigravity
+export DB_NAME=tksde
 
 python app.py
 ```
@@ -280,10 +280,10 @@ Run a local PostgreSQL instance with Docker:
 
 ```bash
 docker run -d \
-  --name antigravity-db \
+  --name tksde-db \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
-  -e POSTGRES_DB=antigravity \
+  -e POSTGRES_DB=tksde \
   -p 5432:5432 \
   postgres:16-alpine
 ```
